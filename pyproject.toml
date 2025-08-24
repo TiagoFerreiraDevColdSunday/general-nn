@@ -1,0 +1,23 @@
+[project]
+name = "nn-comparison"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "TiagoFerreiraDevColdSunday",email = "ferreiradev495@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas (>=2.3.2,<3.0.0)",
+    "scikit-learn (>=1.7.1,<2.0.0)",
+    "tensorflow (==2.16.2)",
+    "numpy (<2.0.0)",
+    "keras (>=3.11.3,<4.0.0)"
+]
+
+[tool.poetry]
+packages = [{ include = "src" }]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
