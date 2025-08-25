@@ -17,7 +17,7 @@ def to_seq(x):
 # Data is from kaggle
 #
 def main():
-    df = pd.read_csv("data/cancer_data.csv")
+    df = pd.read_csv("../data/cancer_data.csv")
 
     print("Columns:", df.columns.to_list())
 

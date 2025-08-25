@@ -49,3 +49,19 @@ Optimizers use gradients, learning rates and can also apply other algorithms to 
 - Momentum 1: Mean of the previous gradients plus the current one.
 
 - Momentum 2: Controls how much a gradient should increase or shrink.
+
+
+## Batch Size
+- How many samples you will send the ML model in one go.
+
+## Loss
+Loss is a term for how wrong was the model compared to the srource of truth.
+
+
+## Dense function
+y=f(Wx+b)
+
+x -> input vector, for our LSTM case is the 64 dimensions vector.
+b -> bias
+W -> the weight of the layer
+f -> activation function (which we are using Relu so max(0,x))
