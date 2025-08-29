@@ -18,4 +18,17 @@ The vector that we send to the model is as it follows:
 
 
 
+# To understand Gumbel...
 
+# Exponential Distribution
+
+density(x, λ) = λe^(-λx)
+
+x -> unit time
+λ -> number of events per unit time
+
+if λ = 1 and x = 1, we would get density = 1 (would be at it's highest)
+if x = 2 and λ = 1 we would get density = 0.135
+So the longer the events happen per time unit (x increases and λ doesn't increase at the same ratio as x), the density decreases.
+
+Density is the curve that shows how the probability is spread -> investigate.

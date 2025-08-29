@@ -78,11 +78,12 @@ NUM_MAIN = 50
 NUM_STAR = 12
 K_MAIN = 5
 K_STAR = 2
-T = 100
 
-def build_recurrent_nn(n_features):
+# The length of the testing sample
+
+def build_recurrent_nn(t : 100):
     
-    inp = layers.Input(shape=(T, NUM_MAIN + NUM_STAR))
+    inp = layers.Input(shape=(t, NUM_MAIN + NUM_STAR))
 
     # We increase the output vector from 64 to 128
     # Increasing the vector dimension helps the model to find patterns..
@@ -99,5 +100,16 @@ def build_recurrent_nn(n_features):
 
     model = models.Model(inp, [soft_main, soft_stars])
 
+    # Categorical Crossentropy evaluates the loss of the model
+    # m being the cadidates for the correct answer
+    # L = - (0 * Log(0.7) + 1 * log(0.1) + .....m)
+    # The higher the value the more loss it did, 0 is multiplied to the candidate if it's not the correct value.
+    #
+    model.compile(optimizer=keras.optimizers.Adadelta(1e-3),
+                  loss={
+                      "main_probs": "categorical_crossentropy",
+                      "star_probs": "categorical_crossentropy"
+                  })
 
+    return model
 
