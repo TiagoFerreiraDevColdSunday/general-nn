@@ -1,6 +1,6 @@
 import keras
 
-from keras import layers
+from keras import layers, models
 
 # Building a long short term memory model
 # NN to decide wether to keep, update or forget information
@@ -28,11 +28,11 @@ from keras import layers
 # ft -> forget gate
 # it -> input gate
 
-def build_lstm(seq_len):
+def build_lstm(n_features):
     # Keras is a hight-level API to build NN
     # batch_size = seq_len (the number of samples)
     # 1 feature in this case our validation if it is malicious or not cancer
-    inp = keras.Input(shape=(seq_len, 1))
+    inp = keras.Input(shape=(n_features, 1))
 
     # First layer: LSTM
     # 64 is the number of neurons
@@ -49,6 +49,7 @@ def build_lstm(seq_len):
     # Dense does a linear formula (x = Wx + b)
     # Then a relu which is a max(0,x)
     # 32 is the number of neurons
+    # The number of neurons decrease cause we want to compact data into more concrete one.
     x = layers.Dense(32, activation="relu")(x)
     
     x = layers.Dropout(0.3)(x)
@@ -72,3 +73,43 @@ def build_lstm(seq_len):
     # If the LLM predicted correctly, the loss is small and the adam barely gets updates
 
     return model
+
+NUM_MAIN = 50
+NUM_STAR = 12
+K_MAIN = 5
+K_STAR = 2
+
+# The length of the testing sample
+
+def build_recurrent_nn(t=100):
+    
+    inp = layers.Input(shape=(t, NUM_MAIN + NUM_STAR))
+
+    # We increase the output vector from 64 to 128
+    # Increasing the vector dimension helps the model to find patterns..
+    x = layers.GRU(128, return_sequences=True, dropout=0.2)(inp)
+    x = layers.GRU(64, dropout=0.2)(x)
+
+    # Logits are the raw numbers that come from the dense
+    main_logits = layers.Dense(NUM_MAIN)(x)
+    star_logits = layers.Dense(NUM_STAR)(x)
+
+    # Softmax
+    soft_main = layers.Softmax(name="main_probs")(main_logits)
+    soft_stars = layers.Softmax(name="star_probs")(star_logits)
+
+    model = models.Model(inp, [soft_main, soft_stars])
+
+    # Categorical Crossentropy evaluates the loss of the model
+    # m being the cadidates for the correct answer
+    # L = - (0 * Log(0.7) + 1 * log(0.1) + .....m)
+    # The higher the value the more loss it did, 0 is multiplied to the candidate if it's not the correct value.
+    #
+    model.compile(optimizer=keras.optimizers.Adadelta(1e-3),
+                  loss={
+                      "main_probs": "categorical_crossentropy",
+                      "star_probs": "categorical_crossentropy"
+                  })
+
+    return model
+

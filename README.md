@@ -49,3 +49,27 @@ Optimizers use gradients, learning rates and can also apply other algorithms to 
 - Momentum 1: Mean of the previous gradients plus the current one.
 
 - Momentum 2: Controls how much a gradient should increase or shrink.
+
+
+## Batch Size
+- How many samples you will send the ML model in one go.
+
+## Loss
+Loss is a term for how wrong was the model compared to the source truth.
+For GNU the algorithm used was categorical cronssentropy
+
+So assuming there's 3 classes and the correct would be the 2nd one: [0,1,0]
+The LLM would give the pridcted probs to the algorithm [0.1,0.7,0.2]
+
+Loss = -log(0.7) =~ 0.15 a small value which is good.
+
+If Loss = -log(1) =~ 0 which is perfect guess.
+
+
+## Dense function
+y=f(Wx+b)
+
+x -> input vector, for our LSTM case is the 64 dimensions vector.
+b -> bias
+W -> the weight of the layer
+f -> activation function (which we are using Relu so max(0,x))
