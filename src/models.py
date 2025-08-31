@@ -81,22 +81,22 @@ K_STAR = 2
 
 # The length of the testing sample
 
-def build_recurrent_nn(t : 100):
+def build_recurrent_nn(t=100):
     
     inp = layers.Input(shape=(t, NUM_MAIN + NUM_STAR))
 
     # We increase the output vector from 64 to 128
     # Increasing the vector dimension helps the model to find patterns..
     x = layers.GRU(128, return_sequences=True, dropout=0.2)(inp)
-    x = layers.GRU(62, dropout=0.2)(x)
+    x = layers.GRU(64, dropout=0.2)(x)
 
     # Logits are the raw numbers that come from the dense
     main_logits = layers.Dense(NUM_MAIN)(x)
     star_logits = layers.Dense(NUM_STAR)(x)
 
     # Softmax
-    soft_main = layers.Softmax(name="soft_main")(main_logits)
-    soft_stars = layers.Softmax(name="soft_stars")(star_logits)
+    soft_main = layers.Softmax(name="main_probs")(main_logits)
+    soft_stars = layers.Softmax(name="star_probs")(star_logits)
 
     model = models.Model(inp, [soft_main, soft_stars])
 

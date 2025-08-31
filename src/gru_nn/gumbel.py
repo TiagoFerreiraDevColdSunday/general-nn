@@ -1,16 +1,17 @@
 import tensorflow as tf
+import numpy as np
 # Gumbel top-k
 # Similar to the next token distribution
 
 # Gumbels adds noise (some randomness) to the final probabilities, therefore eventhough we pick the highest softmax.
 # It's not greedy due to this randomness.
 
-EPS = 1.20
+EPS = 1e-9
 # eps -> numerical stability so we don't get 
 # shape is the dimensions of the gumbell vector
 def _sample_gumbel(shape):
     
-    U = tf.random(shape, minval=0.0, maxval=1.0)
+    U = tf.random.uniform(shape, minval=0.0, maxval=1.0)
 
     # Explanation:
     #
@@ -22,7 +23,7 @@ def _sample_gumbel(shape):
 
 
 
-def gumbel_top_k(probs, k):
+def _gumbel_top_k(probs, k):
 
     # log is used to transform these probs into logits ready to be used for Gumbel
     # ex: [0.1, 0.3, 0.6] -- (applying log) --> [-2.3, -1.2, -0.5]
@@ -30,8 +31,17 @@ def gumbel_top_k(probs, k):
     logits = tf.math.log(tf.cast(probs, tf.float32) + EPS)
 
     # shape -> gives the dimensions of logits
-    g = _sample_gumbel(tf.shape(logits))
+    gumbel_noise = _sample_gumbel(tf.shape(logits))
+
+    y = logits + gumbel_noise
+
+    topk = tf.math.top_k(y, k=k, sorted=True).indices
+
+    return topk
 
 
-def sample_draw(main_prob_vec, star_prob_vec, n_main, n_stars):
-    return
+def sample_draw_probs(main_probs_vec, star_probs_vec, k_main=5, k_star=2):
+    numbers = np.sort(_gumbel_top_k(main_probs_vec, k_main) + 1)
+    stars = np.sort(_gumbel_top_k(star_probs_vec, k_star) + 1)
+
+    return numbers, stars
